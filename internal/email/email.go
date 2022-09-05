@@ -13,6 +13,8 @@ type EmailTemplate struct {
 	Body     string
 }
 
+const timeFormat = "02 Feb 2006"
+
 type EmailData struct {
 	EmailTemplate
 	To string
@@ -26,6 +28,6 @@ func (et EmailTemplate) CustomerEmail(cus customer.Customer) EmailData {
 	emailData.Body = strings.Replace(emailData.Body, "{{TITLE}}", cus.Title, 1)
 	emailData.Body = strings.Replace(emailData.Body, "{{FIRST_NAME}}", cus.FirstName, 1)
 	emailData.Body = strings.Replace(emailData.Body, "{{LAST_NAME}}", cus.LastName, 1)
-	emailData.Body = strings.Replace(emailData.Body, "{{TODAY}}", time.Now().Format("25 Feb 2015"), 1)
+	emailData.Body = strings.Replace(emailData.Body, "{{TODAY}}", time.Now().Format(timeFormat), 1)
 	return emailData
 }

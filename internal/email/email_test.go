@@ -40,7 +40,7 @@ func TestEmailTemplate_CustomerEmail(t *testing.T) {
 					From:     "The Marketing Team<marketing@example.com>",
 					Subject:  "A new product is being launched soon...",
 					MimeType: "text/plain",
-					Body:     fmt.Sprintf("Hi %s %s %s,\nToday, %s, we would like to tell you that... Sincerely,\nThe Marketing Team", testCustomer.Title, testCustomer.FirstName, testCustomer.LastName, time.Now().Format("25 Feb 2015")),
+					Body:     fmt.Sprintf("Hi %s %s %s,\nToday, %s, we would like to tell you that... Sincerely,\nThe Marketing Team", testCustomer.Title, testCustomer.FirstName, testCustomer.LastName, time.Now().Format(timeFormat)),
 				},
 			},
 		},
