@@ -38,7 +38,7 @@ func NewEmailService(emailTemplatePath, outputEmailsPath string) (*EmailService,
 	}, nil
 }
 
-func (em EmailService) SendMail(cus customer.Customer) error {
+func (em *EmailService) SendMail(cus customer.Customer) error {
 	customerEmail := em.emailTemplate.CustomerEmail(cus)
 	emailJson, err := json.Marshal(customerEmail)
 	if err != nil {
@@ -51,7 +51,7 @@ func (em EmailService) SendMail(cus customer.Customer) error {
 	return nil
 }
 
-func (em EmailService) BulkSendMails(customers []customer.Customer) {
+func (em *EmailService) BulkSendMails(customers []customer.Customer) {
 	wg := sync.WaitGroup{}
 	for _, cus := range customers {
 		wg.Add(1)
