@@ -1,20 +1,34 @@
 package config
 
 import (
-	"path"
+	"os"
 	"strings"
 	"testing"
 )
 
+const (
+	testEmailTemplatePath    = "email_template.json"
+	testErrEmailTemplatePath = "err_email_template.json"
+	testCustomersPath        = "customers.csv"
+	testErrCustomersPath     = "err_customers.csv"
+	testEmailsPath           = "emails"
+	testErrEmailsPath        = "err_emails"
+	testErrorsPath           = "errors.csv"
+)
+
 func TestConfig_Verify(t *testing.T) {
-	directoryPath := "../../"
-	emailTemplatePath := path.Join(directoryPath, "email_template.json")
-	errEmailTemplatePath := path.Join(directoryPath, "err_email_template.json")
-	customersPath := path.Join(directoryPath, "customers.csv")
-	errCustomersPath := path.Join(directoryPath, "err_customers.csv")
-	emailsPath := path.Join(directoryPath, "emails")
-	errEmailsPath := path.Join(directoryPath, "err_emails")
-	errorsPath := path.Join(directoryPath, "errors.csv")
+	if _, err := os.Create(testEmailTemplatePath); err != nil {
+		panic("error when create test email template file")
+	}
+	defer os.Remove(testEmailTemplatePath)
+	if _, err := os.Create(testCustomersPath); err != nil {
+		panic("error when create test customers file")
+	}
+	defer os.Remove(testCustomersPath)
+	if err := os.Mkdir(testEmailsPath, 0755); err != nil {
+		panic("error when create test emails folder")
+	}
+	defer os.Remove(testEmailsPath)
 	tests := []struct {
 		name         string
 		config       Config
@@ -24,20 +38,20 @@ func TestConfig_Verify(t *testing.T) {
 		{
 			name: "config is valid",
 			config: Config{
-				EmailTemplatePath:  emailTemplatePath,
-				CustomersPath:      customersPath,
-				OutputEmailsPath:   emailsPath,
-				ErrorCustomersPath: errorsPath,
+				EmailTemplatePath:  testEmailTemplatePath,
+				CustomersPath:      testCustomersPath,
+				OutputEmailsPath:   testEmailsPath,
+				ErrorCustomersPath: testErrorsPath,
 			},
 			wantErr: false,
 		},
 		{
 			name: "email template path is not exists",
 			config: Config{
-				EmailTemplatePath:  errEmailTemplatePath,
-				CustomersPath:      customersPath,
-				OutputEmailsPath:   emailsPath,
-				ErrorCustomersPath: errorsPath,
+				EmailTemplatePath:  testErrEmailTemplatePath,
+				CustomersPath:      testCustomersPath,
+				OutputEmailsPath:   testEmailsPath,
+				ErrorCustomersPath: testErrorsPath,
 			},
 			wantErr:      true,
 			errorMessage: errorEmailTemplatePath,
@@ -45,10 +59,10 @@ func TestConfig_Verify(t *testing.T) {
 		{
 			name: "customers path is not exists",
 			config: Config{
-				EmailTemplatePath:  emailTemplatePath,
-				CustomersPath:      errCustomersPath,
-				OutputEmailsPath:   emailsPath,
-				ErrorCustomersPath: errorsPath,
+				EmailTemplatePath:  testEmailTemplatePath,
+				CustomersPath:      testErrCustomersPath,
+				OutputEmailsPath:   testEmailsPath,
+				ErrorCustomersPath: testErrorsPath,
 			},
 			wantErr:      true,
 			errorMessage: errorCustomersPath,
@@ -56,10 +70,10 @@ func TestConfig_Verify(t *testing.T) {
 		{
 			name: "output emails path is not exists",
 			config: Config{
-				EmailTemplatePath:  emailTemplatePath,
-				CustomersPath:      customersPath,
-				OutputEmailsPath:   errEmailsPath,
-				ErrorCustomersPath: errorsPath,
+				EmailTemplatePath:  testEmailTemplatePath,
+				CustomersPath:      testCustomersPath,
+				OutputEmailsPath:   testErrEmailsPath,
+				ErrorCustomersPath: testErrorsPath,
 			},
 			wantErr:      true,
 			errorMessage: errorOutputEmailsPath,
@@ -67,10 +81,10 @@ func TestConfig_Verify(t *testing.T) {
 		{
 			name: "output emails path is not a directory",
 			config: Config{
-				EmailTemplatePath:  emailTemplatePath,
-				CustomersPath:      customersPath,
-				OutputEmailsPath:   emailTemplatePath,
-				ErrorCustomersPath: errorsPath,
+				EmailTemplatePath:  testEmailTemplatePath,
+				CustomersPath:      testCustomersPath,
+				OutputEmailsPath:   testEmailTemplatePath,
+				ErrorCustomersPath: testErrorsPath,
 			},
 			wantErr:      true,
 			errorMessage: outputEmailsPathIsNotDir,
